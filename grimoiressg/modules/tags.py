@@ -1,7 +1,9 @@
+from typing import Any
+from grimoiressg.context import Context
 from grimoiressg.utils import logger
 
 
-def extract_tags(data, context, config):
+def extract_tags(data: list[dict[str, Any]], context: Context, config: dict[str, Any]):
     tags = {}
 
     for entry in data:
@@ -17,4 +19,5 @@ def extract_tags(data, context, config):
     else:
         logger.debug("No tags found.")
 
-    context["tags"] = tags
+    context.tags = tags
+
