@@ -17,13 +17,14 @@ possible_separators = (
 def handle_file(filename: str) -> list[dict[str, Any]]:
     logger.debug(" Reading %s...", to_relative(filename))
 
-    match pathlib.Path(filename).suffix:
+    file_suffix = pathlib.Path(filename).suffix
+    match file_suffix:
         case ".yml" | ".yaml":
             data = handle_yaml(filename)
         case ".md":
             data = handle_markdown(filename)
         case _:
-            raise ValueError(filename)
+            raise ValueError(f"File extension {file_suffix} not supported.")
 
     data["filename"] = filename
     data["relative_filename"] = to_relative(filename)
@@ -33,7 +34,9 @@ def handle_file(filename: str) -> list[dict[str, Any]]:
     relative_dir = os.path.dirname(filename)
     for filename in data.get("include", []):
         filename = relative_dir + "/" + filename
+
         sub_data = for_each_glob(filename, handle_file)
+
         results.extend(sub_data)
 
     return results
