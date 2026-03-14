@@ -1,15 +1,18 @@
 import logging
+from typing import Any
 
 from grimoiressg.arguments import parse_arguments_to_initial_context
 from grimoiressg.config import read_config
 from grimoiressg.content_files import recursively_read_files
+from grimoiressg.context import Context
 from grimoiressg.modules import available_modules
 from grimoiressg.utils import logger
 
 
-def apply_modules(data, config, context):
+def apply_modules(data: Any, config: dict[str, Any], context: Context):
     for module in config.get("enabled_modules", []):
         logger.info("Applying module %s...", module)
+
         available_modules[module](data, context, config)
 
 
