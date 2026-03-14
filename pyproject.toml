@@ -3,7 +3,7 @@ name = "grimoire-ssg"
 packages = [
     { include = "grimoiressg" }
 ]
-version = "1.1.2"
+version = "1.2.0"
 description = "A minimalistic Static Site Generator"
 authors = ["Sigma <git@sigma-star.io>"]
 license = "BSD-2-Clause"

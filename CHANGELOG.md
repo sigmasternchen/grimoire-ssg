@@ -1,3 +1,10 @@
+## v1.2.0 (2026-03-14)
+
+### Feat
+
+- Add table support
+- Add support for markdown files
+
 ## v1.1.2 (2025-01-18)
 
 ### Fix
