@@ -43,22 +43,22 @@ def handle_file(filename: str) -> list[dict[str, Any]]:
 
 
 def handle_markdown(filename: str) -> dict[str, Any]:
-    data = {}
+    parsed_data: dict[str, Any] = {}
 
     with open(filename, "r") as file:
-        _frontmatter = ""
+        meta_data = ""
         content = ""
 
         if content := file.read():
-            _frontmatter, content = split_frontmatter(content)
+            meta_data, content = split_frontmatter(content)
 
-        if _frontmatter:
-            data: dict[str, Any] = yaml.safe_load(_frontmatter)
+        if meta_data:
+            parsed_data = yaml.safe_load(meta_data)
 
         if content != "":
-            data["markdown"] = content
+            parsed_data["markdown"] = content
 
-    return data
+    return parsed_data
 
 
 def handle_yaml(filename: str) -> dict[str, Any]:
@@ -109,6 +109,6 @@ def recursively_read_files(context: Context):
 
     data = deduplicate(data)
 
-    logger.info(f"Read %d files in total.", len(data))
+    logger.info(f"Read {len(data)} files in total.")
 
     return data
