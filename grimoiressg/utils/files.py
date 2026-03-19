@@ -1,7 +1,9 @@
 from collections.abc import Callable
 import glob
 import os
+from time import sleep, time
 from typing import Any
+from pathlib import Path
 
 
 def to_relative(path: str):
@@ -11,10 +13,16 @@ def to_relative(path: str):
     return trimmed
 
 
-def for_each_glob(glob_path: str, callback: Callable[[str], list[dict[str, Any]]]):
+def for_each_glob(glob_path: Path, callback: Callable[[Path], list[dict[str, Any]]]):
     results = []
 
-    for filename in glob.glob(os.path.realpath(glob_path)):
+    if "*" not in glob_path.as_posix():
+        return callback(Path(glob_path))
+
+    if glob_path.is_absolute():
+        glob_path = glob_path.relative_to("/")
+
+    for filename in glob_path.parent.glob(glob_path.name):
         results.extend(callback(filename))
 
     return results
