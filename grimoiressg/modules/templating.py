@@ -32,7 +32,7 @@ def render_templates(data, context: Context, _config):
             files_written += 1
             filename = os.path.realpath(context.output_dir + "/" + entry["output"])
 
-            logger.debug(" writing to %s", to_relative(filename))
+            # logger.debug(" writing to %s", to_relative(filename))
             os.makedirs(os.path.dirname(filename), exist_ok=True)
 
             with open(filename, "w") as file:

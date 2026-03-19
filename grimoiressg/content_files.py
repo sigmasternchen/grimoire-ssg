@@ -14,8 +14,8 @@ possible_separators = (
 )
 
 
-def handle_file(filename: str) -> list[dict[str, Any]]:
-    logger.debug(" Reading %s...", to_relative(filename))
+def handle_file(filename: pathlib.Path) -> list[dict[str, Any]]:
+    logger.debug(" Reading %s...", filename.name)
 
     file_suffix = pathlib.Path(filename).suffix
     match file_suffix:
@@ -27,13 +27,13 @@ def handle_file(filename: str) -> list[dict[str, Any]]:
             raise ValueError(f"File extension {file_suffix} not supported.")
 
     data["filename"] = filename
-    data["relative_filename"] = to_relative(filename)
+    data["relative_filename"] = filename.name
 
     results = [data]
 
-    relative_dir = os.path.dirname(filename)
+    relative_dir = filename.parent
     for filename in data.get("include", []):
-        filename = relative_dir + "/" + filename
+        filename = relative_dir / filename
 
         sub_data = for_each_glob(filename, handle_file)
 
@@ -105,6 +105,7 @@ def recursively_read_files(context: Context):
     logger.info("Reading content files...")
 
     for filename in context.filenames:
+        filename = pathlib.Path(filename)
         data.extend(for_each_glob(filename, handle_file))
 
     data = deduplicate(data)

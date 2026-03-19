@@ -1,6 +1,8 @@
+from collections.abc import Iterable
 import gzip
 import os
 from itertools import batched
+from typing import Any
 from xml.etree import ElementTree as ET
 
 from grimoiressg.context import Context
@@ -19,7 +21,7 @@ def sitemaps_default_config():
     }
 
 
-def get_files_to_map(data, sitemap_config):
+def get_files_to_map(data, sitemap_config: dict[str, Any]):
     content_for_sitemap = filter(
         lambda item: item.get("output", False) and not item.get("skip_sitemap", False),
         data,
@@ -33,27 +35,33 @@ def get_files_to_map(data, sitemap_config):
         return [content_for_sitemap]
 
 
-def get_sitemap_file_suffix(sitemap_config):
+def get_sitemap_file_suffix(sitemap_config: dict[str, Any]) -> str:
     if sitemap_config["compression"]:
         return ".xml.gz"
-    else:
-        return ".xml"
+
+    return ".xml"
 
 
-def save_sitemaps_file(xml_data, name, context: Context, sitemap_config):
-    xml_str = ET.tostring(xml_data, encoding="utf8")
+def save_sitemaps_file(
+    xml_data: ET.Element,
+    name: str,
+    context: Context,
+    sitemap_config: dict[str, Any],
+):
+    xml_str: str = ET.tostring(xml_data, encoding="utf8")
 
-    filename = os.path.realpath(
-        context.output_dir + "/" + name + get_sitemap_file_suffix(sitemap_config)
-    )
-    logger.debug("Writing sitemap %s", to_relative(filename))
+    filename = context.output_dir / f"{name}.{get_sitemap_file_suffix(sitemap_config)}"
+    logger.debug("Writing sitemap %s", filename.name)
 
     open_function = gzip.open if sitemap_config["compression"] else open
+
     with open_function(filename, "wb") as file:
-        file.write(xml_str)
+        _ = file.write(xml_str.encode())
 
 
-def generate_index_file(context, sitemap_config, number_of_batches):
+def generate_index_file(
+    context: Context, sitemap_config: dict[str, Any], number_of_batches: int
+):
     root = ET.Element(
         "sitemapindex",
         attrib={
@@ -77,7 +85,9 @@ def generate_index_file(context, sitemap_config, number_of_batches):
     save_sitemaps_file(root, sitemap_config["file_prefix"], context, sitemap_config)
 
 
-def generate_sitemaps_file(batch, name, context, sitemap_config):
+def generate_sitemaps_file(
+    batch: Iterable[Any], name: str, context: Context, sitemap_config: dict[str, Any]
+) -> None:
     root = ET.Element(
         "urlset",
         attrib={
@@ -96,7 +106,7 @@ def generate_sitemaps_file(batch, name, context, sitemap_config):
     save_sitemaps_file(root, name, context, sitemap_config)
 
 
-def generate_sitemaps(data, context, config):
+def generate_sitemaps(data, context: Context, config):
     sitemaps_config = sitemaps_default_config()
     sitemaps_config.update(config.get("sitemaps", {}))
 
