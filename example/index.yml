@@ -1,8 +1,0 @@
-include:
-  - blog/*.yml
-output: index.html
-template: homepage.templ.html
-markdown: |
-  # Hello World
-  
-  This is the home page.

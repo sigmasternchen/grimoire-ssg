@@ -1,8 +1,0 @@
-{% extends template_dir + "/layout.templ.html" %}
-{% block title %}Blog - {{ current.title }}{% endblock %}
-{% block content %}
-    <h1>{{ current.title }}</h1>
-    <h2>{{ current.date }}</h2>
-
-    {{ current.markdown_compiled | safe }}
-{% endblock %}

@@ -1,7 +1,0 @@
-output: blog/entry2.html
-template: ../entry.templ.html
-tags: [blog]
-title: Entry 2
-date: 2024-01-06
-markdown: |
-  This is my second entry.

@@ -1,9 +1,0 @@
-load_modules:
-  - external_module_test
-
-enabled_modules:
-  - tags
-  - markdown
-  - templating
-  - test
-  - sitemaps
